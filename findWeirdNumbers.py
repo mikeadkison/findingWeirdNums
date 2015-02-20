@@ -116,33 +116,56 @@ for firstNum in range(10, 1000):
     for secondNum in range(10, 1000):
         if (firstNum != secondNum):
             actualAnswer = float(firstNum) / secondNum
-            for k in range(1, getLength(firstNum)):
-                permutes = outputPermutations(getLength(firstNum), k) #size of num P k
-                #print permutes
-                for firstPerm in permutes:
-                    for secondPerm in permutes:
-                        firstPermDigits = []
-                        secondPermDigits = []
-                        for i in range(0, len(firstPerm)):
-                            firstPermDigits = firstPermDigits + [getDigit(firstNum, firstPerm[i] - 1)]
-                            secondPermDigits = secondPermDigits + [getDigit(secondNum, secondPerm[i] - 1)]
-                        if firstPermDigits == secondPermDigits: #digits cancel with each other
-                            #print firstNum, secondNum
-                            #remove digits and see if it works
-                            firstNumLess = firstNum
+            if (not (actualAnswer - 0.1 < 0.00000001)):
+                for k in range(1, min(getLength(firstNum), getLength(secondNum))):
+                    permutes = outputPermutations(getLength(firstNum), k) #size of num P k
+                    #print permutes
+                    for firstPerm in permutes:
+                        for secondPerm in permutes:
+                            firstPermDigits = []
+                            secondPermDigits = []
                             for i in range(0, len(firstPerm)):
-                                firstNumLess = removeDigit(firstNumLess, firstPerm[i] - 1)
-                                for k in range(i + 1, len(firstPerm)):
-                                    if firstPerm[i] < firstPerm[k]:
-                                        firstPerm[k] = firstPerm[k] - 1
+                                firstPermDigits = firstPermDigits + [getDigit(firstNum, firstPerm[i] - 1)]
+                                secondPermDigits = secondPermDigits + [getDigit(secondNum, secondPerm[i] - 1)]
+                            if firstPermDigits == secondPermDigits: #digits cancel with each other
+                                #print firstNum, secondNum
+                                #remove digits and see if it works
+                                firstNumLess = firstNum
+                                for i in range(0, len(firstPerm)):
+                                    firstNumLess = removeDigit(firstNumLess, firstPerm[i] - 1)
+                                    for k in range(i + 1, len(firstPerm)):
+                                        if firstPerm[i] < firstPerm[k]:
+                                            firstPerm[k] = firstPerm[k] - 1
 
-                            secondNumLess = secondNum
-                            for i in range(0, len(secondPerm)):
-                                secondNumLess = removeDigit(secondNumLess, secondPerm[i] - 1)
-                                for k in range(i + 1, len(secondPerm)):
-                                    if secondPerm[i] < secondPerm[k]:
-                                        secondPerm[k] = secondPerm[k] - 1
-                            if (firstNumLess != firstNum / 10 or secondNumLess != secondNum / 10):
-                                if secondNumLess != 0: #division by 0
-                                    if abs(float(firstNumLess) / secondNumLess - actualAnswer) < 0.00001: #approximate error
-                                        print firstNum, secondNum, firstNumLess, secondNumLess, firstPermDigits, secondPermDigits, actualAnswer
+                                secondNumLess = secondNum
+                                for i in range(0, len(secondPerm)):
+                                    secondNumLess = removeDigit(secondNumLess, secondPerm[i] - 1)
+                                    for k in range(i + 1, len(secondPerm)):
+                                        if secondPerm[i] < secondPerm[k]:
+                                            secondPerm[k] = secondPerm[k] - 1
+                                if (firstNumLess != firstNum / getLength(firstNum) or secondNumLess != secondNum / getLength(secondNum)):
+                                    if secondNumLess != 0: #division by 0
+                                        if abs(float(firstNumLess) / secondNumLess - actualAnswer) < 0.000001: #approximate error
+                                            originalIsMultipleOfTen = False
+                                            
+                                            smallestNum = min(firstNum, secondNum)
+                                            largestNum = max(firstNum, secondNum)
+                                            if smallestNum == firstNum:
+                                                smallestNumLess = firstNumLess
+                                            else:
+                                                smallestNumLess = secondNumLess
+
+                                            i = 1
+                                            divideBy = 1
+                                            while i < getLength(smallestNum) and originalIsMultipleOfTen == False:
+                                                divideBy = divideBy * 10
+                                                if float(smallestNum) / divideBy - smallestNumLess < 0.0000001:
+                                                    originalIsMultipleOfTen = True
+
+                                                if (largestNum / smallestNum == divideBy):
+                                                    originalIsMultipleOfTen = True
+                                                i = i + 1
+
+    
+                                            if not originalIsMultipleOfTen:
+                                                print "original nums: ", firstNum, secondNum, "cancelled nums: ", firstNumLess, secondNumLess, "digits removed: ", firstPermDigits, secondPermDigits, firstNumLess, secondNumLess, "result of division: ", actualAnswer
