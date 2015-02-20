@@ -1,5 +1,6 @@
 import copy
 import time
+import sets
 def fact(n):
     if n == 0:
         return 1
@@ -112,16 +113,20 @@ def removeDigit(num, digitIndex):
         currentDigitIndex = currentDigitIndex - 1
     return newNum
 
-for firstNum in range(10, 1000):
-    for secondNum in range(10, 1000):
+
+for firstNum in range(10, 10000):
+    for secondNum in range(10, firstNum + 1):
+        if (firstNum == 64 and secondNum == 16):
+            print ">>>>>>>>>>>>>>>>>>>>>>"
         if (firstNum != secondNum):
             actualAnswer = float(firstNum) / secondNum
             if (not (actualAnswer - 0.1 < 0.00000001)):
                 for k in range(1, min(getLength(firstNum), getLength(secondNum))):
                     permutes = outputPermutations(getLength(firstNum), k) #size of num P k
-                    #print permutes
-                    for firstPerm in permutes:
-                        for secondPerm in permutes:
+                    for q in range(0, len(permutes)):
+                        for r in range(0, len(permutes)): #j-j-j-j-jagged
+                            firstPerm = permutes[q]
+                            secondPerm = permutes[r]
                             firstPermDigits = []
                             secondPermDigits = []
                             for i in range(0, len(firstPerm)):
@@ -157,6 +162,8 @@ for firstNum in range(10, 1000):
 
                                             i = 1
                                             divideBy = 1
+                                            if (firstNum == 64 and secondNum == 16):
+                                                print ">>>>>>>>>>>>>>>>>>>>>>"
                                             while i < getLength(smallestNum) and originalIsMultipleOfTen == False:
                                                 divideBy = divideBy * 10
                                                 if float(smallestNum) / divideBy - smallestNumLess < 0.0000001:
@@ -165,7 +172,6 @@ for firstNum in range(10, 1000):
                                                 if (largestNum / smallestNum == divideBy):
                                                     originalIsMultipleOfTen = True
                                                 i = i + 1
-
-    
-                                            if not originalIsMultipleOfTen:
-                                                print "original nums: ", firstNum, secondNum, "cancelled nums: ", firstNumLess, secondNumLess, "digits removed: ", firstPermDigits, secondPermDigits, firstNumLess, secondNumLess, "result of division: ", actualAnswer
+                                            repeat = False
+                                            if not originalIsMultipleOfTen and not repeat:
+                                                print "original nums: ", firstNum, secondNum, "cancelled nums: ", firstNumLess, secondNumLess, "digits removed: ", firstPermDigits, secondPermDigits, "result of division: ", actualAnswer
